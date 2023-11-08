@@ -5,12 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 
+public class SubjectColor
+{
+    public string Subject { get; set; }
+    public Colors.ColorType WhatColor { get; set; }
+}
 
 public class AudioInputSystem : MonoBehaviour
 {
     private DictationRecognizer m_DictationRecognizer;
 
-    private Dictionary<string, List<string>> NounIdentify;
+    private Dictionary<string, List<SubjectColor>> NounIdentify;
 
     private Dictionary<string, Colors.ColorType> ColorIdentify;
 
@@ -32,27 +37,33 @@ public class AudioInputSystem : MonoBehaviour
     private void SetNounsDictionary()
     {
         {
-            NounIdentify = new Dictionary<string, List<string>> ();
+            NounIdentify = new Dictionary<string, List<SubjectColor>>();
             foreach (PersonajeEvent PersonajeTemp in Personajes)
             {
                 if (!NounIdentify.ContainsKey(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()))
                 {
-                    List<string> TemporalList = new List<string>();
+                    List<SubjectColor> TemporalList = new List<SubjectColor>();
                     NounIdentify.Add(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower(), TemporalList);
                 }
-                    NounIdentify[PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()].Add(PersonajeTemp.Key.ToLower());
+
+                SubjectColor newtempColor = new SubjectColor();
+                newtempColor.Subject = PersonajeTemp.Key.ToLower();
+                newtempColor.WhatColor = Colors.ColorType.None;
+
+                NounIdentify[PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()].Add(newtempColor);
 
                 foreach (Noun TemporalNoun in PersonajeTemp.ScriptableObjectPersonaje.PalabrasEtiquetas)
                 {
-                    if (TemporalNoun.Color.adjective == Colors.ColorType.None)
+                    if (!NounIdentify.ContainsKey(TemporalNoun.Palabra))
                     {
-                        if (!NounIdentify.ContainsKey(TemporalNoun.Palabra))
-                        {
-                            List<string> TemporalList = new List<string>();
-                            NounIdentify.Add(TemporalNoun.Palabra.ToLower(), TemporalList);
-                        }
-                        NounIdentify[TemporalNoun.Palabra.ToLower()].Add(PersonajeTemp.Key.ToLower());
+                        List<SubjectColor> TemporalList = new List<SubjectColor>();
+                        NounIdentify.Add(TemporalNoun.Palabra.ToLower(), TemporalList);
                     }
+                    SubjectColor newtempColor2 = new SubjectColor();
+                    newtempColor2.Subject = PersonajeTemp.Key.ToLower();
+                    newtempColor2.WhatColor = TemporalNoun.Color.adjective;
+
+                    NounIdentify[TemporalNoun.Palabra.ToLower()].Add(newtempColor2);
                 }
             }
         }
@@ -70,6 +81,8 @@ public class AudioInputSystem : MonoBehaviour
 
     private void SetColorDictinary()
     {
+        ColorIdentify = new Dictionary<string, Colors.ColorType>();
+
         ColorIdentify.Add("amarillo", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarillos", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarilla", Colors.ColorType.Amarillo);
@@ -81,7 +94,8 @@ public class AudioInputSystem : MonoBehaviour
         NegativeDefinition.Add("no");
     }
 
-    private void Awake() {
+    private void Awake()
+    {
 
         SetListaNombre();
         SetNegative();
@@ -92,7 +106,7 @@ public class AudioInputSystem : MonoBehaviour
 
         Debug.Log(PhraseRecognitionSystem.isSupported);
     }
-    
+
 
 
     private void OnEnable()
@@ -190,9 +204,9 @@ public class AudioInputSystem : MonoBehaviour
         //Si no es no entonces X
         if (!negative)
         {
-            foreach (string name in NounIdentify[temporalnoun])
+            foreach (SubjectColor name in NounIdentify[temporalnoun])
             {
-                //if(temporalColor == null || ColorIdentify[temporalColor] == Personaje[name])
+                if(temporalColor == null || ColorIdentify[temporalColor] == name.WhatColor)
                     Debug.Log(name);
             }
         }
@@ -200,13 +214,14 @@ public class AudioInputSystem : MonoBehaviour
         else
         {
             List<string> CharactersOptions = new List<string>(ListaPersonajes);
-            foreach (string name in NounIdentify[temporalnoun])
+            foreach (SubjectColor name in NounIdentify[temporalnoun])
             {
-                CharactersOptions.Remove(name);
+                CharactersOptions.Remove(name.Subject);
             }
             foreach (string name in CharactersOptions)
             {
-                Debug.Log(name);
+                if (temporalColor == null || ColorIdentify[temporalColor] == name.WhatColor)
+                    Debug.Log(name);
                 //Personaje[name].RaiseEvent();
             }
 
