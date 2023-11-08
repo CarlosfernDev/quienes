@@ -7,8 +7,14 @@ public class AudioInputSystem : MonoBehaviour
 {
     private DictationRecognizer m_DictationRecognizer;
 
+    private Dictionary<string, string[]> sustantivos;
+
     private void Awake()
     {
+        sustantivos = new Dictionary<string, string[]>();
+
+        sustantivos.Add("rojo", new string[] {"Bart","Homer"});
+
         Debug.Log(PhraseRecognitionSystem.isSupported);
     }
 
@@ -17,9 +23,22 @@ public class AudioInputSystem : MonoBehaviour
     {
         m_DictationRecognizer = new DictationRecognizer();
 
+        Debug.Log(m_DictationRecognizer.Status);
+
         m_DictationRecognizer.DictationResult += (text, confidence) =>
         {
             Debug.LogFormat("Dictation result: {0}", text);
+
+            string[] words = text.Split(" ");
+            foreach(string word in words)
+            {
+                string[] value;
+                if (sustantivos.TryGetValue(word, out value))
+                {
+                    Debug.Log(value[0] + " " + value[1]);
+                }
+            }
+
             //m_Recognitions.text += text + "\n";
         };
 
