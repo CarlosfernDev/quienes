@@ -247,25 +247,32 @@ public class AudioInputSystem : MonoBehaviour
         if (temporalnoun == null)
             return;
 
+        List<string> CharactersOptions = new List<string>(ListaPersonajes);
         if (apellido)
         {
-            //Hacer logica de apellidos XD
-        }
-
-        List<string> CharactersOptions = new List<string>(ListaPersonajes);
-        foreach (SubjectColor name in NounIdentify[temporalnoun])
-        {
-            if (temporalColor == null)
+            foreach (PersonajeEvent name in Apellidos[temporalnoun])
             {
-                CharactersOptions.Remove(name.Subject.ToLower());
+                CharactersOptions.Remove(name.Key.ToLower());
                 continue;
             }
+        }
+        else
+        {
 
-            if (name.WhatColor == Colors.ColorType.None || ColorIdentify[temporalColor] == name.WhatColor)
-                CharactersOptions.Remove(name.Subject.ToLower());
+            foreach (SubjectColor name in NounIdentify[temporalnoun])
+            {
+                if (temporalColor == null)
+                {
+                    CharactersOptions.Remove(name.Subject.ToLower());
+                    continue;
+                }
+
+                if (name.WhatColor == Colors.ColorType.None || ColorIdentify[temporalColor] == name.WhatColor)
+                    CharactersOptions.Remove(name.Subject.ToLower());
+            }
         }
 
-        if (CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && !negative)
+        if (CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && !negative || !CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && negative)
         {
             Debug.Log("No");
         }
