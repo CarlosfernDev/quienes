@@ -20,11 +20,15 @@ public class AudioInputSystem : MonoBehaviour
     private Dictionary<string, Colors.ColorType> ColorIdentify;
 
     private Dictionary<string, PersonajeEvent> Personaje;
+    private Dictionary<string, List<PersonajeEvent>> Apellidos;
     public List<string> ListaPersonajes;
     public PersonajeEvent[] Personajes;
 
+    private int WinnerID;
 
     public List<string> NegativeDefinition;
+    public List<string> ApellidoSinonimoDefinition;
+    public List<string> Resolver;
 
     private void SetListaNombre()
     {
@@ -34,24 +38,14 @@ public class AudioInputSystem : MonoBehaviour
         }
     }
 
+    #region Diccionarios
+
     private void SetNounsDictionary()
     {
         {
             NounIdentify = new Dictionary<string, List<SubjectColor>>();
             foreach (PersonajeEvent PersonajeTemp in Personajes)
             {
-                if (!NounIdentify.ContainsKey(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()))
-                {
-                    List<SubjectColor> TemporalList = new List<SubjectColor>();
-                    NounIdentify.Add(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower(), TemporalList);
-                }
-
-                SubjectColor newtempColor = new SubjectColor();
-                newtempColor.Subject = PersonajeTemp.Key.ToLower();
-                newtempColor.WhatColor = Colors.ColorType.None;
-
-                NounIdentify[PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()].Add(newtempColor);
-
                 foreach (Noun TemporalNoun in PersonajeTemp.ScriptableObjectPersonaje.PalabrasEtiquetas)
                 {
                     if (!NounIdentify.ContainsKey(TemporalNoun.Palabra))
@@ -69,6 +63,21 @@ public class AudioInputSystem : MonoBehaviour
         }
     }
 
+    private void SetApellidos()
+    {
+        Apellidos = new Dictionary<string, List<PersonajeEvent>>();
+
+        foreach (PersonajeEvent PersonajeTemp in Personajes)
+        {
+            if (!Apellidos.ContainsKey(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()))
+            {
+                List<PersonajeEvent> TemporalList = new List<PersonajeEvent>();
+                Apellidos.Add(PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower(), TemporalList);
+            }
+            Apellidos[PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower()].Add(PersonajeTemp);
+        }
+    }
+
     private void SetEventsDictionary()
     {
         Personaje = new Dictionary<string, PersonajeEvent>();
@@ -79,6 +88,10 @@ public class AudioInputSystem : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Ensenyarle palabras
+
     private void SetColorDictinary()
     {
         ColorIdentify = new Dictionary<string, Colors.ColorType>();
@@ -87,6 +100,9 @@ public class AudioInputSystem : MonoBehaviour
         ColorIdentify.Add("amarillos", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarilla", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarillas", Colors.ColorType.Amarillo);
+
+        ColorIdentify.Add("azul", Colors.ColorType.Azul);
+        ColorIdentify.Add("azulado", Colors.ColorType.Azul);
     }
 
     private void SetNegative()
@@ -94,15 +110,30 @@ public class AudioInputSystem : MonoBehaviour
         NegativeDefinition.Add("no");
     }
 
+    private void SetApellidoSinonimo()
+    {
+        ApellidoSinonimoDefinition.Add("apellido");
+        ApellidoSinonimoDefinition.Add("apellida");
+    }
+
+    private void SetSolutionKeyWords()
+    {
+        Resolver.Add("es");
+    }
+    #endregion
+
     private void Awake()
     {
 
         SetListaNombre();
+        SetApellidos();
         SetNegative();
+        SetSolutionKeyWords();
 
         SetEventsDictionary();
         SetNounsDictionary();
         SetColorDictinary();
+        SetApellidoSinonimo();
 
         Debug.Log(PhraseRecognitionSystem.isSupported);
     }
@@ -114,18 +145,14 @@ public class AudioInputSystem : MonoBehaviour
 
     }
 
-    void BartFunction()
-    {
-        Debug.Log("Bart");
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-
-        Debug.Log(NounIdentify["simpson"]);
+        WinnerID = UnityEngine.Random.Range(0, Personajes.Length);
+        Debug.Log(Apellidos["simpson"]);
         Dictation();
     }
+
 
     void Dictation()
     {
@@ -136,7 +163,9 @@ public class AudioInputSystem : MonoBehaviour
         m_DictationRecognizer.DictationResult += (text, confidence) =>
         {
             Debug.LogFormat("Dictation result: {0}", text);
-            TextAnalyzer(text);
+
+            if (!SolutionChecker(text))
+                TextAnalyzer(text);
             //m_Recognitions.text += text + "\n";
         };
 
@@ -151,8 +180,9 @@ public class AudioInputSystem : MonoBehaviour
             if (completionCause != DictationCompletionCause.Complete)
             {
                 m_DictationRecognizer.Start();
-                Debug.LogErrorFormat("Dictation completed unsuccessfully: {0}.", completionCause);
             }
+
+            Debug.LogErrorFormat("Dictation completed unsuccessfully: {0}.", completionCause);
         };
 
         m_DictationRecognizer.DictationError += (error, hresult) =>
@@ -169,15 +199,31 @@ public class AudioInputSystem : MonoBehaviour
     {
         string[] words = text.Split(" ");
         bool negative = false;
+        bool apellido = false;
         string temporalnoun = null;
         string temporalColor = null;
 
         foreach (string word in words)
         {
+            if(apellido == true)
+            {
+                if (Apellidos.ContainsKey(word.ToLower()))
+                {
+                    temporalnoun = word.ToLower();
+                    break;
+                }
+            }
+
             //Mira si dice no tambien mantiene la logica de no sobre no es si
             if (NegativeDefinition.Contains(word.ToLower()))
             {
                 negative = !negative;
+                continue;
+            }
+
+            if (ApellidoSinonimoDefinition.Contains(word.ToLower()))
+            {
+                apellido = true;
                 continue;
             }
 
@@ -201,33 +247,73 @@ public class AudioInputSystem : MonoBehaviour
         if (temporalnoun == null)
             return;
 
-        //Si no es no entonces X
-        if (!negative)
+        if (apellido)
         {
-            foreach (SubjectColor name in NounIdentify[temporalnoun])
-            {
-                if(temporalColor == null || ColorIdentify[temporalColor] == name.WhatColor)
-                    Debug.Log(name);
-            }
+            //Hacer logica de apellidos XD
         }
-        //Si es no entonces x
-        else
+
+        List<string> CharactersOptions = new List<string>(ListaPersonajes);
+        foreach (SubjectColor name in NounIdentify[temporalnoun])
         {
-            List<string> CharactersOptions = new List<string>(ListaPersonajes);
-            foreach (SubjectColor name in NounIdentify[temporalnoun])
+            if (temporalColor == null)
             {
-                CharactersOptions.Remove(name.Subject);
-            }
-            foreach (string name in CharactersOptions)
-            {
-                if (temporalColor == null || ColorIdentify[temporalColor] == name.WhatColor)
-                    Debug.Log(name);
-                //Personaje[name].RaiseEvent();
+                CharactersOptions.Remove(name.Subject.ToLower());
+                continue;
             }
 
+            if (name.WhatColor == Colors.ColorType.None || ColorIdentify[temporalColor] == name.WhatColor)
+                CharactersOptions.Remove(name.Subject.ToLower());
+        }
+
+        if (CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && !negative)
+        {
+            Debug.Log("No");
+        }
+        else
+        {
+            Debug.Log("Si");
         }
     }
 
     #endregion
 
+    bool SolutionChecker(string text)
+    {
+        string[] words = text.Split(" ");
+        bool TimeToSolve = false;
+
+        foreach (string word in words)
+        {
+            if (Resolver.Contains(word.ToLower()))
+            {
+                TimeToSolve = true;
+                break;
+            }
+        }
+
+        if (!TimeToSolve)
+            return false;
+
+        //Ahora a hacer la comprobacion
+        foreach (string word in words)
+        {
+            foreach (PersonajeEvent PersonajeTemp in Personajes)
+            {
+                if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
+                {
+                    if (Personajes[WinnerID].name.ToLower() == word.ToLower())
+                    {
+                        Debug.Log("Si es " + Personajes[WinnerID].name);
+                    }
+                    else
+                    {
+                        Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].name);
+                    }
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
 }
