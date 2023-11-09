@@ -13,13 +13,15 @@ public class SubjectColor
 
 public class AudioInputSystem : MonoBehaviour
 {
+    public static AudioInputSystem Instance { get; private set; }
+
     private DictationRecognizer m_DictationRecognizer;
 
     private Dictionary<string, List<SubjectColor>> NounIdentify;
 
     private Dictionary<string, Colors.ColorType> ColorIdentify;
 
-    private Dictionary<string, PersonajeEvent> Personaje;
+    public Dictionary<string, PersonajeEvent> Personaje;
     private Dictionary<string, List<PersonajeEvent>> Apellidos;
     public List<string> ListaPersonajes;
     public PersonajeEvent[] Personajes;
@@ -29,14 +31,6 @@ public class AudioInputSystem : MonoBehaviour
     public List<string> NegativeDefinition;
     public List<string> ApellidoSinonimoDefinition;
     public List<string> Resolver;
-
-    private void SetListaNombre()
-    {
-        foreach (PersonajeEvent Personaje in Personajes)
-        {
-            ListaPersonajes.Add(Personaje.Key.ToLower());
-        }
-    }
 
     #region Diccionarios
 
@@ -92,6 +86,14 @@ public class AudioInputSystem : MonoBehaviour
 
     #region Ensenyarle palabras
 
+    private void SetListaNombre()
+    {
+        foreach (PersonajeEvent Personaje in Personajes)
+        {
+            ListaPersonajes.Add(Personaje.Key.ToLower());
+        }
+    }
+
     private void SetColorDictinary()
     {
         ColorIdentify = new Dictionary<string, Colors.ColorType>();
@@ -122,8 +124,11 @@ public class AudioInputSystem : MonoBehaviour
     }
     #endregion
 
+    #region Unity Functions
+
     private void Awake()
     {
+        InstanceSingleton();
 
         SetListaNombre();
         SetApellidos();
@@ -153,7 +158,9 @@ public class AudioInputSystem : MonoBehaviour
         Dictation();
     }
 
+    #endregion
 
+    #region Input Audio Things
     void Dictation()
     {
         m_DictationRecognizer = new DictationRecognizer();
@@ -205,7 +212,7 @@ public class AudioInputSystem : MonoBehaviour
 
         foreach (string word in words)
         {
-            if(apellido == true)
+            if (apellido == true)
             {
                 if (Apellidos.ContainsKey(word.ToLower()))
                 {
@@ -247,12 +254,12 @@ public class AudioInputSystem : MonoBehaviour
         if (temporalnoun == null)
             return;
 
-        List<string> CharactersOptions = new List<string>(ListaPersonajes);
+        List<string> NoAfectedCharacters = new List<string>(ListaPersonajes);
         if (apellido)
         {
             foreach (PersonajeEvent name in Apellidos[temporalnoun])
             {
-                CharactersOptions.Remove(name.Key.ToLower());
+                NoAfectedCharacters.Remove(name.Key.ToLower());
                 continue;
             }
         }
@@ -263,27 +270,38 @@ public class AudioInputSystem : MonoBehaviour
             {
                 if (temporalColor == null)
                 {
-                    CharactersOptions.Remove(name.Subject.ToLower());
+                    NoAfectedCharacters.Remove(name.Subject.ToLower());
                     continue;
                 }
 
                 if (name.WhatColor == Colors.ColorType.None || ColorIdentify[temporalColor] == name.WhatColor)
-                    CharactersOptions.Remove(name.Subject.ToLower());
+                    NoAfectedCharacters.Remove(name.Subject.ToLower());
             }
         }
 
-        if (CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && !negative || !CharactersOptions.Contains(Personajes[WinnerID].name.ToLower()) && negative)
+        GameManager.Instance.RemoveIntentos(1);
+
+        if (NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && negative)
         {
             Debug.Log("No");
+            foreach(SubjectColor name in NounIdentify[temporalnoun])
+            {
+                Personaje[name.Subject].Trigger.Invoke();
+            }
         }
         else
         {
             Debug.Log("Si");
+            foreach(string name in NoAfectedCharacters)
+            {
+                Personaje[name].Trigger.Invoke();
+            }
         }
     }
 
     #endregion
 
+    #region Revisa si es la solucion
     bool SolutionChecker(string text)
     {
         string[] words = text.Split(" ");
@@ -308,6 +326,8 @@ public class AudioInputSystem : MonoBehaviour
             {
                 if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
                 {
+                    GameManager.Instance.RemoveIntentos(1);
+
                     if (Personajes[WinnerID].name.ToLower() == word.ToLower())
                     {
                         Debug.Log("Si es " + Personajes[WinnerID].name);
@@ -323,4 +343,29 @@ public class AudioInputSystem : MonoBehaviour
         }
         return false;
     }
+    #endregion
+
+    #endregion
+
+    #region Audio OutputValues
+
+    private void InstanceSingleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+    }
+
+    public PersonajeEvent DiccionarioTextoToPersonaje(string Value)
+    {
+        return Personaje[Value];
+    } 
+
+    #endregion
 }
