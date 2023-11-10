@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68f600b7608a14d4f9fc34d1f3bb0467, type: 3}
-  m_Name: Homer
+  m_Name: Lisa
   m_EditorClassIdentifier: 
-  Nombre: Homer
+  Nombre: Lisa
   Apellido: Simpson
   PalabrasEtiquetas:
-  - Palabra: calva
-    Color:
-      adjective: 0
   - Palabra: piel
     Color:
       adjective: 1
+  - Palabra: vestido
+    Color:
+      adjective: 0
