@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
+using SpeechLib;
 
 public class SubjectColor
 {
@@ -16,6 +17,8 @@ public class AudioInputSystem : MonoBehaviour
     public static AudioInputSystem Instance { get; private set; }
 
     private DictationRecognizer m_DictationRecognizer;
+
+    private SpVoice voice = new SpVoice();
 
     private Dictionary<string, List<SubjectColor>> NounIdentify;
 
@@ -283,6 +286,8 @@ public class AudioInputSystem : MonoBehaviour
 
         if (NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && negative)
         {
+            voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+
             Debug.Log("No");
             foreach(SubjectColor name in NounIdentify[temporalnoun])
             {
@@ -291,6 +296,7 @@ public class AudioInputSystem : MonoBehaviour
         }
         else
         {
+            voice.Speak("Si", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
             Debug.Log("Si");
             foreach(string name in NoAfectedCharacters)
             {
@@ -330,10 +336,12 @@ public class AudioInputSystem : MonoBehaviour
 
                     if (Personajes[WinnerID].name.ToLower() == word.ToLower())
                     {
+                        voice.Speak("Si es " + PersonajeTemp.ScriptableObjectPersonaje.name + " " + PersonajeTemp.ScriptableObjectPersonaje.Apellido, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Debug.Log("Si es " + Personajes[WinnerID].name);
                     }
                     else
                     {
+                        voice.Speak("No es " + PersonajeTemp.ScriptableObjectPersonaje.name + " " + PersonajeTemp.ScriptableObjectPersonaje.Apellido, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].name);
                     }
                     return true;
