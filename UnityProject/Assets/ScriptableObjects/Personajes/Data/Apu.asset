@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9a30f5b55aee3f4892026b40dd92591, type: 3}
-  m_Name: Bart
+  m_Script: {fileID: 11500000, guid: 68f600b7608a14d4f9fc34d1f3bb0467, type: 3}
+  m_Name: Apu
   m_EditorClassIdentifier: 
-  Key: 
-  ScriptableObjectPersonaje: {fileID: 0}
+  Nombre: Apu
+  Apellido: Nahasapeemapetilon
+  PalabrasEtiquetas: []

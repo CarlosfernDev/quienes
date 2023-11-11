@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a30f5b55aee3f4892026b40dd92591, type: 3}
   m_Name: Lisa
   m_EditorClassIdentifier: 
-  Key: Lisa
-  ScriptableObjectPersonaje: {fileID: 11400000, guid: 8929091b86d69f642ba5b902fa0a0ab5, type: 2}
+  Key: 
+  ScriptableObjectPersonaje: {fileID: 0}

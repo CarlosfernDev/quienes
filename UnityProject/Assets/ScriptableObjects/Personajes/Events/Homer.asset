@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a30f5b55aee3f4892026b40dd92591, type: 3}
   m_Name: Homer
   m_EditorClassIdentifier: 
-  Key: Homer
-  ScriptableObjectPersonaje: {fileID: 11400000, guid: 773dcf88e1f73f34e9fb4afd61543141, type: 2}
+  Key: 
+  ScriptableObjectPersonaje: {fileID: 0}
