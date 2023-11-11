@@ -1,17 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68f600b7608a14d4f9fc34d1f3bb0467, type: 3}
-  m_Name: Krusty
-  m_EditorClassIdentifier: 
-  Nombre: 
-  Apellido: 
-  PalabrasEtiquetas: []
+version https://git-lfs.github.com/spec/v1
+oid sha256:aec793d3263a5afc1e903cd2c91f7e75dfe93e04a53e99f21032f1e7b0bf7c64
+size 460

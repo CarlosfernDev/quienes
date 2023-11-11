@@ -1,17 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68f600b7608a14d4f9fc34d1f3bb0467, type: 3}
-  m_Name: Lenny
-  m_EditorClassIdentifier: 
-  Nombre: 
-  Apellido: 
-  PalabrasEtiquetas: []
+version https://git-lfs.github.com/spec/v1
+oid sha256:cc61101ad37595b60f482ff579cc3e366237e48693c9c351629623f4932ea9b7
+size 459
