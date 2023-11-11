@@ -207,6 +207,9 @@ public class AudioInputSystem : MonoBehaviour
 
     void TextAnalyzer(string text)
     {
+        if (GameManager.Instance.GetIntentos() <= 0)
+            return;
+
         string[] words = text.Split(" ");
         bool negative = false;
         bool apellido = false;
@@ -283,8 +286,12 @@ public class AudioInputSystem : MonoBehaviour
         }
 
         GameManager.Instance.RemoveIntentos(1);
+        if (GameManager.Instance.GetIntentos() <= 0)
+        {
+            voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+        }
 
-        if (NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].name.ToLower()) && negative)
+        if (NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && negative)
         {
             voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
 
@@ -310,6 +317,9 @@ public class AudioInputSystem : MonoBehaviour
     #region Revisa si es la solucion
     bool SolutionChecker(string text)
     {
+        if (GameManager.Instance.GetIntentos() <= 0)
+            return false;
+
         string[] words = text.Split(" ");
         bool TimeToSolve = false;
 
@@ -333,15 +343,19 @@ public class AudioInputSystem : MonoBehaviour
                 if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
                 {
                     GameManager.Instance.RemoveIntentos(1);
+                    if (GameManager.Instance.GetIntentos() <= 0)
+                    {
+                        voice.Speak("No has acertado, era el " + Personajes[WinnerID].name, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                    }
 
                     if (Personajes[WinnerID].name.ToLower() == word.ToLower())
                     {
-                        voice.Speak("Si es " + PersonajeTemp.ScriptableObjectPersonaje.name + " " + PersonajeTemp.ScriptableObjectPersonaje.Apellido, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                        voice.Speak("Correcto", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Debug.Log("Si es " + Personajes[WinnerID].name);
                     }
                     else
                     {
-                        voice.Speak("No es " + PersonajeTemp.ScriptableObjectPersonaje.name + " " + PersonajeTemp.ScriptableObjectPersonaje.Apellido, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                        voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].name);
                     }
                     return true;
