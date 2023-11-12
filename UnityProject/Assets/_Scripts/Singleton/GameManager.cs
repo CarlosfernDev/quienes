@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public Action RestartAction;
 
     [SerializeField] private TMP_Text _ScoreText;
 
@@ -16,6 +19,7 @@ public class GameManager : MonoBehaviour
     // Sera para vida y el texto
     void Awake()
     {
+        _StopGame = true;
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -34,9 +38,18 @@ public class GameManager : MonoBehaviour
 
     #region Gameloop
 
-    private void RestartGame()
+    public void RestartGame()
     {
+        StartCoroutine(RestartRutine());
+    }
+
+    IEnumerator RestartRutine()
+    {
+        yield return new WaitForSeconds(4f);
         Intentos = 5;
+        UpdateTextIntentos();
+        RestartAction.Invoke();
+        AudioInputSystem.Instance.ChangeWinner();
         _StopGame = false;
     }
 
