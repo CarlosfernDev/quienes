@@ -291,7 +291,11 @@ public class AudioInputSystem : MonoBehaviour
         if (NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && negative)
         {
             if (GameManager.Instance.GetIntentos() <= 0)
+            {
                 voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                GameManager.Instance.SetStopGame(true);
+                Personajes[WinnerID].Winner.Invoke();
+            }
             else
                 voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
 
@@ -317,7 +321,7 @@ public class AudioInputSystem : MonoBehaviour
     #region Revisa si es la solucion
     bool SolutionChecker(string text)
     {
-        if (GameManager.Instance.GetIntentos() <= 0)
+        if (GameManager.Instance.GetIntentos() <= 0 || GameManager.Instance.GetStopGame())
             return false;
 
         string[] words = text.Split(" ");
@@ -347,15 +351,22 @@ public class AudioInputSystem : MonoBehaviour
                     if (Personajes[WinnerID].ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
                     {
                         voice.Speak("Correcto", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                        Personajes[WinnerID].Winner.Invoke();
+                        GameManager.Instance.SetStopGame(true);
                         Debug.Log("Si es " + Personajes[WinnerID].name);
                     }
                     else
                     {
-                        if(GameManager.Instance.GetIntentos() <= 0)
+                        if (GameManager.Instance.GetIntentos() <= 0)
+                        {
                             voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                            GameManager.Instance.SetStopGame(true);
+                            Personajes[WinnerID].Winner.Invoke();
+                        }
                         else
                             voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
 
+                        PersonajeTemp.Trigger.Invoke();
                         Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre);
                     }
                     return true;

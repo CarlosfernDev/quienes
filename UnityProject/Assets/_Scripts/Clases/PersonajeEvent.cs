@@ -8,6 +8,7 @@ public class PersonajeEvent : ScriptableObject
 {
     public string Key;
     public Action Trigger;
+    public Action Winner;
     public Personaje ScriptableObjectPersonaje;
 
     public void RaiseEvent()

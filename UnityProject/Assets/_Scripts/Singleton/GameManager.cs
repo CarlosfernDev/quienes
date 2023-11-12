@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    [SerializeField] private TMP_Text _ScoreText;
+
+    private bool _StopGame;
 
     private int Intentos = 0;
 
@@ -32,6 +37,18 @@ public class GameManager : MonoBehaviour
     private void RestartGame()
     {
         Intentos = 5;
+        _StopGame = false;
+    }
+
+    public void SetStopGame(bool value)
+    {
+        _StopGame = value;
+        return;
+    }
+
+    public bool GetStopGame()
+    {
+        return _StopGame;
     }
 
     #endregion
@@ -41,6 +58,7 @@ public class GameManager : MonoBehaviour
     public void AddIntentos(int value)
     {
         Intentos += value;
+        UpdateTextIntentos();
 
         Debug.Log("Te quedan: " + Intentos + " Intentos");
 
@@ -54,6 +72,7 @@ public class GameManager : MonoBehaviour
     public void RemoveIntentos(int value)
     {
         Intentos -= value;
+        UpdateTextIntentos();
 
         Debug.Log("Te quedan: " + Intentos + " Intentos");
 
@@ -67,6 +86,11 @@ public class GameManager : MonoBehaviour
     {
         return Intentos;
     }
+
+    private void UpdateTextIntentos()
+    {
+        _ScoreText.text ="Intentos " + Intentos;
+    } 
 
     #endregion
 }
