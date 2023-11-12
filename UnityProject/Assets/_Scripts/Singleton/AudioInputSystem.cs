@@ -43,8 +43,10 @@ public class AudioInputSystem : MonoBehaviour
             NounIdentify = new Dictionary<string, List<SubjectColor>>();
             foreach (PersonajeEvent PersonajeTemp in Personajes)
             {
+                Debug.Log("Gerando Lista de " + PersonajeTemp.ScriptableObjectPersonaje.Nombre);
                 foreach (Noun TemporalNoun in PersonajeTemp.ScriptableObjectPersonaje.PalabrasEtiquetas)
                 {
+                    Debug.Log("Intento anadir " + TemporalNoun.Palabra);
                     if (!NounIdentify.ContainsKey(TemporalNoun.Palabra))
                     {
                         List<SubjectColor> TemporalList = new List<SubjectColor>();
@@ -56,8 +58,10 @@ public class AudioInputSystem : MonoBehaviour
 
                     NounIdentify[TemporalNoun.Palabra.ToLower()].Add(newtempColor2);
                 }
+                Debug.Log("Personaje completado");
             }
         }
+        Debug.Log("Listas generadas de palabras");
     }
 
     private void SetApellidos()
