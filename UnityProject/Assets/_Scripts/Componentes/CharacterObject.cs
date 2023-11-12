@@ -20,7 +20,8 @@ public class CharacterObject : MonoBehaviour
 
     private void PlayerDisable()
     {
-        StartCoroutine(ChangeColor());
+        if(Image.gameObject.activeSelf)
+            StartCoroutine(ChangeColor());
     }
 
     private void Win()
