@@ -193,6 +193,7 @@ public class AudioInputSystem : MonoBehaviour
             }
 
             Debug.LogErrorFormat("Dictation completed unsuccessfully: {0}.", completionCause);
+            m_DictationRecognizer.Start();
         };
 
         m_DictationRecognizer.DictationError += (error, hresult) =>
@@ -286,14 +287,13 @@ public class AudioInputSystem : MonoBehaviour
         }
 
         GameManager.Instance.RemoveIntentos(1);
-        if (GameManager.Instance.GetIntentos() <= 0)
-        {
-            voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
-        }
 
         if (NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && !negative || !NoAfectedCharacters.Contains(Personajes[WinnerID].Key.ToLower()) && negative)
         {
-            voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+            if (GameManager.Instance.GetIntentos() <= 0)
+                voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+            else
+                voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
 
             Debug.Log("No");
             foreach(SubjectColor name in NounIdentify[temporalnoun])
@@ -343,20 +343,20 @@ public class AudioInputSystem : MonoBehaviour
                 if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
                 {
                     GameManager.Instance.RemoveIntentos(1);
-                    if (GameManager.Instance.GetIntentos() <= 0)
-                    {
-                        voice.Speak("No has acertado, era el " + Personajes[WinnerID].name, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
-                    }
 
-                    if (Personajes[WinnerID].name.ToLower() == word.ToLower())
+                    if (Personajes[WinnerID].ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
                     {
                         voice.Speak("Correcto", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Debug.Log("Si es " + Personajes[WinnerID].name);
                     }
                     else
                     {
-                        voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
-                        Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].name);
+                        if(GameManager.Instance.GetIntentos() <= 0)
+                            voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                        else
+                            voice.Speak("No", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+
+                        Debug.Log("No es " + word.ToLower() + " era " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre);
                     }
                     return true;
                 }
