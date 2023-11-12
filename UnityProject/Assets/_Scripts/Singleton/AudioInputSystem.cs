@@ -112,6 +112,7 @@ public class AudioInputSystem : MonoBehaviour
 
         ColorIdentify.Add("azul", Colors.ColorType.Azul);
         ColorIdentify.Add("azulado", Colors.ColorType.Azul);
+        ColorIdentify.Add("azules", Colors.ColorType.Azul);
     }
 
     private void SetNegative()
