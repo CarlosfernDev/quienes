@@ -157,6 +157,7 @@ public class AudioInputSystem : MonoBehaviour
     {
         ChangeWinner();
         Debug.Log(Apellidos["simpson"]);
+        GameManager.Instance.startgame();
         Dictation();
     }
 

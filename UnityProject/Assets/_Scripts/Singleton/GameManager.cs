@@ -14,11 +14,14 @@ public class GameManager : MonoBehaviour
 
     private bool _StopGame;
 
+    [SerializeField] private GameObject PauseCanvas;
+
     private int Intentos = 0;
 
     // Sera para vida y el texto
     void Awake()
     {
+        PauseCanvas.SetActive(true);
         _StopGame = true;
         if (Instance != null && Instance != this)
         {
@@ -31,11 +34,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        RestartGame();
-    }
-
     #region Gameloop
 
     public void RestartGame()
@@ -43,14 +41,20 @@ public class GameManager : MonoBehaviour
         StartCoroutine(RestartRutine());
     }
 
+    public void startgame()
+    {
+        Intentos = 5;
+        UpdateTextIntentos();
+        AudioInputSystem.Instance.ChangeWinner();
+        PauseCanvas.SetActive(false);
+        _StopGame = false;
+    }
+
     IEnumerator RestartRutine()
     {
         yield return new WaitForSeconds(4f);
-        Intentos = 5;
-        UpdateTextIntentos();
+        startgame();
         RestartAction.Invoke();
-        AudioInputSystem.Instance.ChangeWinner();
-        _StopGame = false;
     }
 
     public void SetStopGame(bool value)
