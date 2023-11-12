@@ -47,7 +47,7 @@ public class AudioInputSystem : MonoBehaviour
                 foreach (Noun TemporalNoun in PersonajeTemp.ScriptableObjectPersonaje.PalabrasEtiquetas)
                 {
                     Debug.Log("Intento anadir " + TemporalNoun.Palabra);
-                    if (!NounIdentify.ContainsKey(TemporalNoun.Palabra))
+                    if (!NounIdentify.ContainsKey(TemporalNoun.PalabraToLower()))
                     {
                         List<SubjectColor> TemporalList = new List<SubjectColor>();
                         NounIdentify.Add(TemporalNoun.Palabra.ToLower(), TemporalList);
