@@ -12,4 +12,6 @@ public class Personaje : ScriptableObject
     public string Apellido;
 
     public Noun[] PalabrasEtiquetas;
+
+    public List<string> Pronunciacion;
 }

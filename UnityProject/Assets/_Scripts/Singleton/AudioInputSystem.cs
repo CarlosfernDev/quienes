@@ -344,11 +344,11 @@ public class AudioInputSystem : MonoBehaviour
         {
             foreach (PersonajeEvent PersonajeTemp in Personajes)
             {
-                if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
+                if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower() || PersonajeTemp.ScriptableObjectPersonaje.Pronunciacion.Contains(word.ToLower()))
                 {
                     GameManager.Instance.RemoveIntentos(1);
 
-                    if (Personajes[WinnerID].ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower())
+                    if (Personajes[WinnerID].ScriptableObjectPersonaje.Nombre.ToLower() == PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower())
                     {
                         voice.Speak("Correcto", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
                         Personajes[WinnerID].Winner.Invoke();
