@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Colors
 {
-    public enum ColorType {None, Amarillo, Rojo, Azul, Naranja, Verde, Morado, Blanco, Negro };
+    public enum ColorType {None, Amarillo, Rojo, Azul, Naranja, Verde, Morado, Blanco, Negro, Marron, Gris };
 }
