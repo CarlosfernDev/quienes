@@ -109,10 +109,57 @@ public class AudioInputSystem : MonoBehaviour
         ColorIdentify.Add("amarillos", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarilla", Colors.ColorType.Amarillo);
         ColorIdentify.Add("amarillas", Colors.ColorType.Amarillo);
+        ColorIdentify.Add("amarillenta", Colors.ColorType.Amarillo);
 
         ColorIdentify.Add("azul", Colors.ColorType.Azul);
         ColorIdentify.Add("azulado", Colors.ColorType.Azul);
         ColorIdentify.Add("azules", Colors.ColorType.Azul);
+
+        ColorIdentify.Add("rojo", Colors.ColorType.Rojo);
+        ColorIdentify.Add("rojos", Colors.ColorType.Rojo);
+        ColorIdentify.Add("roja", Colors.ColorType.Rojo);
+        ColorIdentify.Add("rojos", Colors.ColorType.Rojo);
+        ColorIdentify.Add("rojiza", Colors.ColorType.Rojo);
+
+        ColorIdentify.Add("naranja", Colors.ColorType.Naranja);
+        ColorIdentify.Add("anaranjado", Colors.ColorType.Naranja);
+        ColorIdentify.Add("naranjas", Colors.ColorType.Naranja);
+
+        //Verde
+        ColorIdentify.Add("verde", Colors.ColorType.Verde);
+        ColorIdentify.Add("verdoso", Colors.ColorType.Verde);
+        ColorIdentify.Add("verdes", Colors.ColorType.Verde);
+        ColorIdentify.Add("verdosa", Colors.ColorType.Verde);
+        ColorIdentify.Add("verdosos", Colors.ColorType.Verde);
+        ColorIdentify.Add("verdosas", Colors.ColorType.Verde);
+        //Morado
+        ColorIdentify.Add("morado", Colors.ColorType.Morado);
+        ColorIdentify.Add("morada", Colors.ColorType.Morado);
+        ColorIdentify.Add("morados", Colors.ColorType.Morado);
+        ColorIdentify.Add("moradas", Colors.ColorType.Morado);
+
+        //Blanco
+        ColorIdentify.Add("blanco", Colors.ColorType.Blanco);
+        ColorIdentify.Add("blancos", Colors.ColorType.Blanco);
+        ColorIdentify.Add("blancas", Colors.ColorType.Blanco);
+        ColorIdentify.Add("blanca", Colors.ColorType.Blanco);
+        //Negro
+        ColorIdentify.Add("negro", Colors.ColorType.Negro);
+        ColorIdentify.Add("negros", Colors.ColorType.Negro);
+        ColorIdentify.Add("negra", Colors.ColorType.Negro);
+        ColorIdentify.Add("negras", Colors.ColorType.Negro);
+        //Marron
+        ColorIdentify.Add("marron", Colors.ColorType.Marron);
+        ColorIdentify.Add("marrones", Colors.ColorType.Marron);
+
+        //Gris
+        ColorIdentify.Add("gris", Colors.ColorType.Gris);
+        ColorIdentify.Add("grises", Colors.ColorType.Gris);
+        ColorIdentify.Add("grisaceo", Colors.ColorType.Gris);
+        ColorIdentify.Add("grisaceas", Colors.ColorType.Gris);
+
+
+
     }
 
     private void SetNegative()
