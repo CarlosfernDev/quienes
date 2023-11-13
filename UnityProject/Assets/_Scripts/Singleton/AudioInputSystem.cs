@@ -151,6 +151,8 @@ public class AudioInputSystem : MonoBehaviour
         ColorIdentify.Add("oscuro", Colors.ColorType.Negro);
         //Marron
         ColorIdentify.Add("marron", Colors.ColorType.Marron);
+        ColorIdentify.Add("marrón", Colors.ColorType.Marron);
+        ColorIdentify.Add("castaño", Colors.ColorType.Marron);
         ColorIdentify.Add("marrones", Colors.ColorType.Marron);
 
         //Gris
@@ -359,8 +361,17 @@ public class AudioInputSystem : MonoBehaviour
             {
                 if (temporalColor == null)
                 {
-                    Personaje[name.Subject].Trigger.Invoke();
-                    continue;
+                    if (negative)
+                    {
+                        foreach (string name2 in NoAfectedCharacters)
+                        {
+                            Personaje[name2].Trigger.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        Personaje[name.Subject].Trigger.Invoke();
+                    }
                 }
                 else
                 {
@@ -380,20 +391,39 @@ public class AudioInputSystem : MonoBehaviour
         }
         else
         {
-            voice.Speak("Si", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
-            Debug.Log("Si");
-            if (temporalColor == null || !negative)
+            if (GameManager.Instance.GetIntentos() <= 0)
             {
-                foreach (string name in NoAfectedCharacters)
+                voice.Speak("No has acertado, era el " + Personajes[WinnerID].ScriptableObjectPersonaje.Nombre, SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+                GameManager.Instance.SetStopGame(true);
+                StartCoroutine(TriggerWinner());
+            }
+            else
+                voice.Speak("Si", SpeechVoiceSpeakFlags.SVSFlagsAsync | SpeechVoiceSpeakFlags.SVSFPurgeBeforeSpeak);
+            Debug.Log("Si");
+            if (temporalColor == null)
+            {
+                if (!negative)
                 {
-                    Personaje[name].Trigger.Invoke();
+                    foreach (string name in NoAfectedCharacters)
+                    {
+                        Personaje[name].Trigger.Invoke();
+                    }
+                }
+                else
+                {
+                    foreach (SubjectColor name in NounIdentify[temporalnoun])
+                    {
+                        Personaje[name.Subject].Trigger.Invoke();
+                    }
                 }
             }
-
-            foreach (SubjectColor name in NounIdentify[temporalnoun])
+            else
             {
-                if (ColorIdentify[temporalColor] != name.WhatColor && !negative || ColorIdentify[temporalColor] == name.WhatColor && negative)
-                    Personaje[name.Subject].Trigger.Invoke();
+                foreach (SubjectColor name in NounIdentify[temporalnoun])
+                {
+                    if (ColorIdentify[temporalColor] != name.WhatColor && !negative || ColorIdentify[temporalColor] == name.WhatColor && negative)
+                        Personaje[name.Subject].Trigger.Invoke();
+                }
             }
         }
     }
