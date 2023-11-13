@@ -57,6 +57,19 @@ public class AudioInputSystem : MonoBehaviour
                     newtempColor2.WhatColor = TemporalNoun.Color.adjective;
 
                     NounIdentify[TemporalNoun.Palabra.ToLower()].Add(newtempColor2);
+
+                    foreach (string Sinonimo in TemporalNoun.Sinonimos)
+                    {
+                        Debug.Log("Intento anadir " + TemporalNoun.Palabra);
+
+                        if (!NounIdentify.ContainsKey(Sinonimo.ToLower()))
+                        {
+                            List<SubjectColor> TemporalList = new List<SubjectColor>();
+                            NounIdentify.Add(Sinonimo.ToLower(), TemporalList);
+                        }
+
+                        NounIdentify[Sinonimo.ToLower()].Add(newtempColor2);
+                    }
                 }
                 Debug.Log("Personaje completado");
             }
@@ -144,7 +157,9 @@ public class AudioInputSystem : MonoBehaviour
         ColorIdentify.Add("blanca", Colors.ColorType.Blanco);
         //Negro
         ColorIdentify.Add("negro", Colors.ColorType.Negro);
+        ColorIdentify.Add("*****", Colors.ColorType.Negro);
         ColorIdentify.Add("negros", Colors.ColorType.Negro);
+        ColorIdentify.Add("******", Colors.ColorType.Negro);
         ColorIdentify.Add("negra", Colors.ColorType.Negro);
         ColorIdentify.Add("negras", Colors.ColorType.Negro);
         ColorIdentify.Add("oscuros", Colors.ColorType.Negro);
@@ -439,7 +454,7 @@ public class AudioInputSystem : MonoBehaviour
         string[] words = text.Split(" ");
         bool TimeToSolve = false;
 
-        foreach (string word in words)
+        /*foreach (string word in words)
         {
             if (Resolver.Contains(word.ToLower()))
             {
@@ -449,14 +464,14 @@ public class AudioInputSystem : MonoBehaviour
         }
 
         if (!TimeToSolve)
-            return false;
+            return false;*/
 
         //Ahora a hacer la comprobacion
         foreach (string word in words)
         {
             foreach (PersonajeEvent PersonajeTemp in Personajes)
             {
-                if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower() || PersonajeTemp.ScriptableObjectPersonaje.Pronunciacion.Contains(word.ToLower()))
+                if (PersonajeTemp.ScriptableObjectPersonaje.Nombre.ToLower() == word.ToLower() || PersonajeTemp.ScriptableObjectPersonaje.Pronunciacion.Contains(word.ToLower()) || (PersonajeTemp.ScriptableObjectPersonaje.Apellido.ToLower() == word.ToLower() && word.ToLower() != "simpson"))
                 {
                     GameManager.Instance.RemoveIntentos(1);
 

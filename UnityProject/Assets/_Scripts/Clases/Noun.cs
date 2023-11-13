@@ -6,5 +6,6 @@ using UnityEngine;
 public class Noun
 {
     public string Palabra;
+    public List<string> Sinonimos;
     public StringAdjective Color;
 }
